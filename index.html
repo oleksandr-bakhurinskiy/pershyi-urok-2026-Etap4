@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конкурс "Перший урок" - Оцінювання</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        body { padding: 20px; background-color: #f8f9fa; }
+        .criterion-group { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .sticky-header { position: sticky; top: 0; background: #f8f9fa; z-index: 1000; padding: 10px 0; border-bottom: 2px solid #dee2e6; }
+        #authOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .hidden { display: none !important; }
+        
+        .pdf-container { 
+            position: relative; 
+            height: 80vh; 
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden; 
+            border-radius: 8px; 
+            background: #e9ecef;
+            border: 1px solid #dee2e6;
+            box-sizing: border-box;
+        }
+        .pdf-container iframe { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100% !important; 
+            height: 100% !important; 
+            max-width: 100%;
+            border: 0; 
+        }
+
+        @media (max-width: 768px) {
+            .criterion-group { padding: 15px 10px; }
+            .pdf-container { height: 70vh; border-radius: 4px; }
+        }
+
+        .empty-pdf { background: #e9ecef; display: flex; align-items: center; justify-content: center; height: 300px; border-radius: 8px; color: #6c757d; }
+    </style>
+</head>
+<body>
+
+<div id="authOverlay">
+    <h3 class="mb-4">Конкурс "Перший урок" 2026v2</h3>
+    <p class="text-muted mb-4">Будь ласка, авторизуйтесь для доступу до оцінювання</p>
+    <div id="buttonDiv"></div>
+</div>
+
+<div class="container hidden" id="mainContent">
+    <div class="sticky-header mb-4 d-flex justify-content-between align-items-center">
+        <h2 class="text-primary m-0">Етап 3: Оцінювання матеріалів (PDF)</h2>
+        <div id="userEmailDisplay" class="badge bg-secondary p-2"></div>
+    </div>
+
+    <form id="evaluationForm">
+        <div class="criterion-group">
+            <label class="form-label fw-bold">1. Оберіть учасника:</label>
+            <select class="form-select mb-3" id="participantName" name="participantName" required>
+                <option value="">Завантаження списку...</option>
+            </select>
+            
+            <div id="pdfDisplay">
+                <div class="empty-pdf">Оберіть учасника, щоб переглянути PDF-документ</div>
+            </div>
+        </div>
+
+        <div class="container mt-4">
+            <div class="criterion-group border p-3 mb-4 rounded bg-white shadow-sm">
+                <h4 class="text-primary border-bottom pb-2">1. Мета, очікувані результати і відповідність темі (макс. 20 балів)</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th class="text-start" style="width: 52%;">Підкритерій</th>
+                                <th style="width: 8%;">0</th><th style="width: 8%;">1</th><th style="width: 8%;">2</th><th style="width: 8%;">3</th><th style="width: 8%;">4</th><th style="width: 8%;">5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1.1. Мета уроку сформульована як результат навчання учнів...</td><td class="text-center"><input type="radio" name="s1_1" value="0" required></td><td class="text-center"><input type="radio" name="s1_1" value="1"></td><td class="text-center"><input type="radio" name="s1_1" value="2"></td><td class="text-center"><input type="radio" name="s1_1" value="3"></td><td class="text-center"><input type="radio" name="s1_1" value="4"></td><td class="text-center"><input type="radio" name="s1_1" value="5"></td></tr>
+                            <tr><td>1.2. Очікувані результати конкретні, досяжні й перевірювані</td><td class="text-center"><input type="radio" name="s1_2" value="0" required></td><td class="text-center"><input type="radio" name="s1_2" value="1"></td><td class="text-center"><input type="radio" name="s1_2" value="2"></td><td class="text-center"><input type="radio" name="s1_2" value="3"></td><td class="text-center"><input type="radio" name="s1_2" value="4"></td><td class="text-center"><input type="radio" name="s1_2" value="5"></td></tr>
+                            <tr><td>1.3. Мета й результати відповідають темі, віку учнів...</td><td class="text-center"><input type="radio" name="s1_3" value="0" required></td><td class="text-center"><input type="radio" name="s1_3" value="1"></td><td class="text-center"><input type="radio" name="s1_3" value="2"></td><td class="text-center"><input type="radio" name="s1_3" value="3"></td><td class="text-center"><input type="radio" name="s1_3" value="4"></td><td class="text-center"><input type="radio" name="s1_3" value="5"></td></tr>
+                            <tr><td>1.4. У сценарії зрозуміло, чому саме такий урок потрібен...</td><td class="text-center"><input type="radio" name="s1_4" value="0" required></td><td class="text-center"><input type="radio" name="s1_4" value="1"></td><td class="text-center"><input type="radio" name="s1_4" value="2"></td><td class="text-center"><input type="radio" name="s1_4" value="3"></td><td class="text-center"><input type="radio" name="s1_4" value="4"></td><td class="text-center"><input type="radio" name="s1_4" value="5"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="criterion-group border p-3 mb-4 rounded bg-white shadow-sm">
+                <h4 class="text-primary border-bottom pb-2">2. Логіка структури уроку (макс. 20 балів)</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th class="text-start" style="width: 52%;">Підкритерій</th>
+                                <th style="width: 8%;">0</th><th style="width: 8%;">1</th><th style="width: 8%;">2</th><th style="width: 8%;">3</th><th style="width: 8%;">4</th><th style="width: 8%;">5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>2.1. Урок має послідовну структуру з логічно пов'язаними етапами</td><td class="text-center"><input type="radio" name="s2_1" value="0" required></td><td class="text-center"><input type="radio" name="s2_1" value="1"></td><td class="text-center"><input type="radio" name="s2_1" value="2"></td><td class="text-center"><input type="radio" name="s2_1" value="3"></td><td class="text-center"><input type="radio" name="s2_1" value="4"></td><td class="text-center"><input type="radio" name="s2_1" value="5"></td></tr>
+                            <tr><td>2.2. Перехід між етапами вмотивований навчальною логікою</td><td class="text-center"><input type="radio" name="s2_2" value="0" required></td><td class="text-center"><input type="radio" name="s2_2" value="1"></td><td class="text-center"><input type="radio" name="s2_2" value="2"></td><td class="text-center"><input type="radio" name="s2_2" value="3"></td><td class="text-center"><input type="radio" name="s2_2" value="4"></td><td class="text-center"><input type="radio" name="s2_2" value="5"></td></tr>
+                            <tr><td>2.3. Час між етапами розподілений реалістично</td><td class="text-center"><input type="radio" name="s2_3" value="0" required></td><td class="text-center"><input type="radio" name="s2_3" value="1"></td><td class="text-center"><input type="radio" name="s2_3" value="2"></td><td class="text-center"><input type="radio" name="s2_3" value="3"></td><td class="text-center"><input type="radio" name="s2_3" value="4"></td><td class="text-center"><input type="radio" name="s2_3" value="5"></td></tr>
+                            <tr><td>2.4. Сценарій не є набором окремих вправ...</td><td class="text-center"><input type="radio" name="s2_4" value="0" required></td><td class="text-center"><input type="radio" name="s2_4" value="1"></td><td class="text-center"><input type="radio" name="s2_4" value="2"></td><td class="text-center"><input type="radio" name="s2_4" value="3"></td><td class="text-center"><input type="radio" name="s2_4" value="4"></td><td class="text-center"><input type="radio" name="s2_4" value="5"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="criterion-group border p-3 mb-4 rounded bg-white shadow-sm">
+                <h4 class="text-primary border-bottom pb-2">3. Організація діяльності учнів (макс. 25 балів)</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th class="text-start" style="width: 52%;">Підкритерій</th>
+                                <th style="width: 8%;">0</th><th style="width: 8%;">1</th><th style="width: 8%;">2</th><th style="width: 8%;">3</th><th style="width: 8%;">4</th><th style="width: 8%;">5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>3.1. У сценарії передбачено активні дії учнів, а не лише слухання</td><td class="text-center"><input type="radio" name="s3_1" value="0" required></td><td class="text-center"><input type="radio" name="s3_1" value="1"></td><td class="text-center"><input type="radio" name="s3_1" value="2"></td><td class="text-center"><input type="radio" name="s3_1" value="3"></td><td class="text-center"><input type="radio" name="s3_1" value="4"></td><td class="text-center"><input type="radio" name="s3_1" value="5"></td></tr>
+                            <tr><td>3.2. Форми роботи відповідають меті...</td><td class="text-center"><input type="radio" name="s3_2" value="0" required></td><td class="text-center"><input type="radio" name="s3_2" value="1"></td><td class="text-center"><input type="radio" name="s3_2" value="2"></td><td class="text-center"><input type="radio" name="s3_2" value="3"></td><td class="text-center"><input type="radio" name="s3_2" value="4"></td><td class="text-center"><input type="radio" name="s3_2" value="5"></td></tr>
+                            <tr><td>3.3. Інструкції для учнів сформульовані зрозуміло й реалістично...</td><td class="text-center"><input type="radio" name="s3_3" value="0" required></td><td class="text-center"><input type="radio" name="s3_3" value="1"></td><td class="text-center"><input type="radio" name="s3_3" value="2"></td><td class="text-center"><input type="radio" name="s3_3" value="3"></td><td class="text-center"><input type="radio" name="s3_3" value="4"></td><td class="text-center"><input type="radio" name="s3_3" value="5"></td></tr>
+                            <tr><td>3.4. Передбачено залучення більшості учнів...</td><td class="text-center"><input type="radio" name="s3_4" value="0" required></td><td class="text-center"><input type="radio" name="s3_4" value="1"></td><td class="text-center"><input type="radio" name="s3_4" value="2"></td><td class="text-center"><input type="radio" name="s3_4" value="3"></td><td class="text-center"><input type="radio" name="s3_4" value="4"></td><td class="text-center"><input type="radio" name="s3_4" value="5"></td></tr>
+                            <tr><td>3.5. Діяльність учнів веде до очікуваного результату...</td><td class="text-center"><input type="radio" name="s3_5" value="0" required></td><td class="text-center"><input type="radio" name="s3_5" value="1"></td><td class="text-center"><input type="radio" name="s3_5" value="2"></td><td class="text-center"><input type="radio" name="s3_5" value="3"></td><td class="text-center"><input type="radio" name="s3_5" value="4"></td><td class="text-center"><input type="radio" name="s3_5" value="5"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="criterion-group border p-3 mb-4 rounded bg-white shadow-sm">
+                <h4 class="text-primary border-bottom pb-2">4. Методично-дидактична якість завдань (макс. 20 балів)</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th class="text-start" style="width: 52%;">Підкритерій</th>
+                                <th style="width: 8%;">0</th><th style="width: 8%;">1</th><th style="width: 8%;">2</th><th style="width: 8%;">3</th><th style="width: 8%;">4</th><th style="width: 8%;">5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>4.1. Завдання мають навчальну цінність і відповідають віку учнів</td><td class="text-center"><input type="radio" name="s4_1" value="0" required></td><td class="text-center"><input type="radio" name="s4_1" value="1"></td><td class="text-center"><input type="radio" name="s4_1" value="2"></td><td class="text-center"><input type="radio" name="s4_1" value="3"></td><td class="text-center"><input type="radio" name="s4_1" value="4"></td><td class="text-center"><input type="radio" name="s4_1" value="5"></td></tr>
+                            <tr><td>4.2. Є логіка ускладнення або поступового розгортання змісту</td><td class="text-center"><input type="radio" name="s4_2" value="0" required></td><td class="text-center"><input type="radio" name="s4_2" value="1"></td><td class="text-center"><input type="radio" name="s4_2" value="2"></td><td class="text-center"><input type="radio" name="s4_2" value="3"></td><td class="text-center"><input type="radio" name="s4_2" value="4"></td><td class="text-center"><input type="radio" name="s4_2" value="5"></td></tr>
+                            <tr><td>4.3. Навчальні засоби підібрані доречно</td><td class="text-center"><input type="radio" name="s4_3" value="0" required></td><td class="text-center"><input type="radio" name="s4_3" value="1"></td><td class="text-center"><input type="radio" name="s4_3" value="2"></td><td class="text-center"><input type="radio" name="s4_3" value="3"></td><td class="text-center"><input type="radio" name="s4_3" value="4"></td><td class="text-center"><input type="radio" name="s4_3" value="5"></td></tr>
+                            <tr><td>4.4. Сценарій не містить методичних, дидактичних або фактичних помилок</td><td class="text-center"><input type="radio" name="s4_4" value="0" required></td><td class="text-center"><input type="radio" name="s4_4" value="1"></td><td class="text-center"><input type="radio" name="s4_4" value="2"></td><td class="text-center"><input type="radio" name="s4_4" value="3"></td><td class="text-center"><input type="radio" name="s4_4" value="4"></td><td class="text-center"><input type="radio" name="s4_4" value="5"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="criterion-group border p-3 mb-4 rounded bg-white shadow-sm">
+                <h4 class="text-primary border-bottom pb-2">5. Практикоорієнтований підхід, оцінювання і рефлексія (макс. 15 балів)</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th class="text-start" style="width: 52%;">Підкритерій</th>
+                                <th style="width: 8%;">0</th><th style="width: 8%;">1</th><th style="width: 8%;">2</th><th style="width: 8%;">3</th><th style="width: 8%;">4</th><th style="width: 8%;">5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>5.1. У сценарії простежується адаптивність сценаріїв до вхідного рівня учнів</td><td class="text-center"><input type="radio" name="s5_1" value="0" required></td><td class="text-center"><input type="radio" name="s5_1" value="1"></td><td class="text-center"><input type="radio" name="s5_1" value="2"></td><td class="text-center"><input type="radio" name="s5_1" value="3"></td><td class="text-center"><input type="radio" name="s5_1" value="4"></td><td class="text-center"><input type="radio" name="s5_1" value="5"></td></tr>
+                            <tr><td>5.2. Передбачено спосіб перевірити, чи досягнуто очікуваних результатів</td><td class="text-center"><input type="radio" name="s5_2" value="0" required></td><td class="text-center"><input type="radio" name="s5_2" value="1"></td><td class="text-center"><input type="radio" name="s5_2" value="2"></td><td class="text-center"><input type="radio" name="s5_2" value="3"></td><td class="text-center"><input type="radio" name="s5_2" value="4"></td><td class="text-center"><input type="radio" name="s5_2" value="5"></td></tr>
+                            <tr><td>5.3. Є змістовна рефлексія учнів або авторський коментар щодо можливих труднощів уроку</td><td class="text-center"><input type="radio" name="s5_3" value="0" required></td><td class="text-center"><input type="radio" name="s5_3" value="1"></td><td class="text-center"><input type="radio" name="s5_3" value="2"></td><td class="text-center"><input type="radio" name="s5_3" value="3"></td><td class="text-center"><input type="radio" name="s5_3" value="4"></td><td class="text-center"><input type="radio" name="s5_3" value="5"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="criterion-group border p-3 mb-4 rounded bg-white shadow-sm">
+                <h4 class="text-primary border-bottom pb-2">Коментар журі (необов'язково)</h4>
+                <div class="mb-3">
+                    <label for="juryComment" class="form-label text-muted">Ви можете залишити відгук або примітки до оцінки:</label>
+                    <textarea class="form-control" id="juryComment" name="juryComment" rows="3" placeholder="Введіть ваш коментар тут..."></textarea>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-100 mb-5">Зберегти оцінку</button>
+    </form>
+</div>
+
+<script>
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykAAmRA6kZNTw6V5MU0gRbPfI1spVsa3FIe5SDnDc_0crTFSRqDEjbvN037PpP5UxS/exec'; 
+    let currentUserEmail = "";
+    let participantsData = []; 
+    
+    // Повний список журі без поділу на категорії
+    const allowedJury = [
+      "obakhurinskyi@ipp.org.ua",
+      "ihor.com@ipp.org.ua",
+      "bah.sasha1@gmail.com",
+      "okolotylo@ipp.org.ua",
+      "bondarevamaya230692@gmail.com",
+      "vtymenko@ipp.org.ua",
+      "paskoo012218@gmail.com",
+      "nataliabondarenko098@gmail.com",
+      "pvmnapn@gmail.com",
+      "largarbuzenko@gmail.com",
+      "buchkivska1810@gmail.com",
+      "onelkass72@gmail.com",
+      "ohuryn@gmail.com",
+      "tkacenkonatalia05@gmail.com",
+      "galasantonina966@gmail.com",
+      "kaluznaya1977@gmail.com",
+      "larisash1771@gmail.com",
+      "irashev.333@gmail.com"
+    ];
+
+    // === БЛОК ПОСИЛАНЬ НА ЗАВДАННЯ ===
+    const taskLinksMap = {
+        "Категорія А: Початкова освіта": "https://ipp.org.ua/wp-content/uploads/2026/10/YA_doslidzhuiu_svit_4_klas.pdf",
+        "A-05": "https://ipp.org.ua/wp-content/uploads/2026/10/YA_doslidzhuiu_svit_4_klas.pdf",
+        
+        "Технології": "https://ipp.org.ua/wp-content/uploads/2026/10/Tekhnolohii_5_klas.pdf",
+        "Категорія Б: Технології": "https://ipp.org.ua/wp-content/uploads/2026/10/Tekhnolohii_5_klas.pdf",
+        "B-T1": "https://ipp.org.ua/wp-content/uploads/2026/10/Tekhnolohii_5_klas.pdf",
+        
+        "Фізична культура": "https://ipp.org.ua/wp-content/uploads/2026/10/Fizychna_kultura_5_klas.pdf",
+        "Категорія Б: Фізична культура": "https://ipp.org.ua/wp-content/uploads/2026/10/Fizychna_kultura_5_klas.pdf",
+        "B-F2": "https://ipp.org.ua/wp-content/uploads/2026/10/Fizychna_kultura_5_klas.pdf",
+        
+        "Українська мова": "https://ipp.org.ua/wp-content/uploads/2026/10/Ukrainska_mova_5_klas.pdf",
+        "Категорія Б: Українська мова": "https://ipp.org.ua/wp-content/uploads/2026/10/Ukrainska_mova_5_klas.pdf",
+        "B-U2": "https://ipp.org.ua/wp-content/uploads/2026/10/Ukrainska_mova_5_klas.pdf",
+        
+        "Музичне мистецтво": "https://ipp.org.ua/wp-content/uploads/2026/10/Muzychne_mystetstvo_5_klas.pdf",
+        "Категорія Б: Музичне мистецтво": "https://ipp.org.ua/wp-content/uploads/2026/10/Muzychne_mystetstvo_5_klas.pdf",
+        "B-M2": "https://ipp.org.ua/wp-content/uploads/2026/10/Muzychne_mystetstvo_5_klas.pdf",
+        
+        "Образотворче мистецтво": "https://ipp.org.ua/wp-content/uploads/2026/10/Obrazotvorche_mystetstvo_5_klas.pdf",
+        "Категорія Б: Образотворче мистецтво": "https://ipp.org.ua/wp-content/uploads/2026/10/Obrazotvorche_mystetstvo_5_klas.pdf",
+        "B-O2": "https://ipp.org.ua/wp-content/uploads/2026/10/Obrazotvorche_mystetstvo_5_klas.pdf"
+    };
+
+    window.onload = function () {
+        google.accounts.id.initialize({
+            client_id: "829527564010-3cct1qlnv3cdlp88c5b54uio8b1j93rb.apps.googleusercontent.com",
+            callback: handleCredentialResponse,
+            ux_mode: 'popup', 
+            context: 'signin',
+            itp_support: true 
+        });
+        
+        google.accounts.id.renderButton(
+            document.getElementById("buttonDiv"),
+            { theme: "outline", size: "large", width: 250, shape: "pill" }
+        );
+    };
+
+    function handleCredentialResponse(response) {
+        try {
+            const base64Url = response.credential.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/').trim();
+            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            const payload = JSON.parse(jsonPayload);
+            currentUserEmail = payload.email.toLowerCase();
+            
+            if (allowedJury.includes(currentUserEmail)) {
+                document.getElementById('authOverlay').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                
+                document.getElementById('userEmailDisplay').innerHTML = `
+                    ${currentUserEmail} 
+                    <span class="badge bg-warning text-dark ms-2">Журі</span>
+                `;
+                
+                loadParticipants();
+            } else {
+                const authMessage = document.querySelector('#authOverlay p');
+                authMessage.innerHTML = `<b style="color:red;">Доступ обмежено!</b><br>Адреса ${currentUserEmail} відсутня в списку журі.`;
+                document.getElementById('buttonDiv').style.display = 'none';
+                
+                if (!document.getElementById('retryBtn')) {
+                    const retryBtn = document.createElement('button');
+                    retryBtn.id = 'retryBtn';
+                    retryBtn.textContent = "Спробувати інший акаунт";
+                    retryBtn.className = "btn btn-outline-secondary mt-3";
+                    retryBtn.onclick = () => location.reload();
+                    document.getElementById('authOverlay').appendChild(retryBtn);
+                }
+            }
+        } catch (error) {
+            console.error("Помилка авторизації:", error);
+            alert("Сталася помилка при вході.");
+        }
+    }
+
+    function loadParticipants() {
+        const url = `${GOOGLE_SCRIPT_URL}?action=getParticipants&email=${currentUserEmail}&t=${new Date().getTime()}`;
+        fetch(url)
+            .then(res => res.json())
+            .then(participants => {
+                participantsData = participants; 
+                const select = document.getElementById('participantName');
+                if (participants.length === 0) {
+                    select.innerHTML = '<option value="">Всі доступні учасники оцінені</option>';
+                    return;
+                }
+                select.innerHTML = '<option value="">-- Оберіть учасника --</option>';
+                
+                participants.forEach((p, index) => {
+                    let opt = document.createElement('option');
+                    opt.value = index; 
+                    // Показуємо справжнє ім'я учасника (p[0]) та його категорію (p[4]), якщо є
+                    opt.textContent = p[0] + (p[4] ? ` (${p[4]})` : '');
+                    select.appendChild(opt);
+                });
+            })
+            .catch(err => console.error("Помилка завантаження учасників:", err));
+    }
+
+    function formatEmbedUrl(url) {
+        if (!url) return null;
+        
+        // 1. YouTube
+        const ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const ytMatch = url.match(ytRegExp);
+        if (ytMatch && ytMatch[2].length === 11) {
+            return `https://www.youtube.com/embed/${ytMatch[2]}`;
+        }
+        
+        // 2. Google Drive
+        if (url.includes('drive.google.com/file/d/')) {
+            const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            if (match && match[1]) {
+                return `https://drive.google.com/file/d/${match[1]}/preview`;
+            }
+        }
+        
+        // 3. Прямі посилання на PDF
+        if (url.toLowerCase().includes('.pdf')) {
+            return url.split('#')[0] + '#toolbar=0&navpanes=0'; 
+        }
+        
+        return url;
+    }
+
+    document.getElementById('participantName').onchange = function() {
+        const index = this.value;
+        const mediaDiv = document.getElementById('pdfDisplay');
+        
+        if (index === "") {
+            mediaDiv.innerHTML = '<div class="empty-pdf">Оберіть учасника...</div>';
+            return;
+        }
+        
+        const rawUrl = participantsData[index][2]; 
+        const participantSubcategory = participantsData[index][4] ? String(participantsData[index][4]).trim() : ""; 
+        
+        const embedUrl = formatEmbedUrl(rawUrl);
+        const isYouTube = embedUrl && embedUrl.includes('youtube.com/embed');
+        
+        if (embedUrl) {
+            const fallbackLink = !isYouTube 
+                ? `<div class="mt-2 text-center w-100">
+                     <p class="text-muted small mb-1">Файл не завантажився у вікні вище?</p>
+                     <a href="${rawUrl}" target="_blank" class="btn btn-sm btn-outline-secondary">Відкрити PDF у новій вкладці</a>
+                   </div>` 
+                : '';
+            
+            // --- ГЕНЕРАЦІЯ КНОПКИ ЗАВДАННЯ ---
+            let taskButtonHtml = '';
+            const taskUrl = taskLinksMap[participantSubcategory];
+            
+            if (taskUrl) {
+                taskButtonHtml = `<a href="${taskUrl}" target="_blank" class="btn btn-outline-primary px-3">Переглянути завдання</a>`;
+            } else if (participantSubcategory) {
+                taskButtonHtml = `<span class="text-muted small align-self-center border p-2 rounded">Завдання для "${participantSubcategory}" не налаштоване</span>`;
+            } else {
+                taskButtonHtml = `<span class="text-muted small align-self-center border p-2 rounded">Категорію учасника не знайдено</span>`;
+            }
+
+            // --- ДИНАМІЧНЕ ПОСИЛАННЯ НА ДОДАТОК ДЛЯ ЖУРІ ---
+            let originalId = participantsData[index][5];
+            let dynamicAppendixLink = `https://ipp.org.ua/wp-content/uploads/2026/10/Etap3_kartky_dlia_zhuri_${originalId}.pdf`;
+
+            const extraButtons = `
+                <div class="mt-4 d-flex gap-2 justify-content-center flex-wrap">
+                    ${taskButtonHtml}
+                    <a href="${dynamicAppendixLink}" target="_blank" class="btn btn-info px-4 text-white fw-bold">Додаток для журі</a>
+                </div>
+            `;
+            
+            mediaDiv.innerHTML = `
+                <div class="pdf-container">
+                    <iframe src="${embedUrl}" allow="autoplay; fullscreen"></iframe>
+                </div>
+                ${fallbackLink}
+                ${extraButtons}`;
+        } else {
+            mediaDiv.innerHTML = '<div class="alert alert-warning mt-2">Матеріал не знайдено або посилання некоректне</div>';
+        }
+    };
+
+    document.getElementById('evaluationForm').onsubmit = function(e) {
+        e.preventDefault();
+        const selectedIndex = document.getElementById('participantName').value;
+        if (selectedIndex === "") return;
+
+        const btn = e.target.querySelector('button');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Зберігаємо...';
+
+        const formData = new FormData(this);
+        const data = {
+            email: currentUserEmail,
+            participantName: participantsData[selectedIndex][0],
+            scores: {},
+            comment: document.getElementById('juryComment').value
+        };
+
+        for (let [key, value] of formData.entries()) {
+            if (key.startsWith('s')) data.scores[key] = value;
+        }
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(data)
+        }).then(() => {
+            alert("Оцінку збережено!");
+            this.reset(); 
+            document.getElementById('pdfDisplay').innerHTML = '<div class="empty-pdf">Оберіть наступного учасника...</div>';
+            loadParticipants(); 
+            btn.disabled = false;
+            btn.textContent = originalText;
+            window.scrollTo(0, 0);
+        }).catch(err => {
+            alert("Помилка: " + err);
+            btn.disabled = false;
+            btn.textContent = originalText;
+        });
+    };
+</script>
+</body>
+</html>
