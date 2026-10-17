@@ -13,33 +13,9 @@
         #authOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
         .hidden { display: none !important; }
         
-        .pdf-container { 
-            position: relative; 
-            height: 80vh; 
-            width: 100%;
-            max-width: 100%;
-            overflow: hidden; 
-            border-radius: 8px; 
-            background: #e9ecef;
-            border: 1px solid #dee2e6;
-            box-sizing: border-box;
-        }
-        .pdf-container iframe { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100% !important; 
-            height: 100% !important; 
-            max-width: 100%;
-            border: 0; 
-        }
-
         @media (max-width: 768px) {
             .criterion-group { padding: 15px 10px; }
-            .pdf-container { height: 70vh; border-radius: 4px; }
         }
-
-        .empty-pdf { background: #e9ecef; display: flex; align-items: center; justify-content: center; height: 300px; border-radius: 8px; color: #6c757d; }
     </style>
 </head>
 <body>
@@ -52,23 +28,19 @@
 
 <div class="container hidden" id="mainContent">
     <div class="sticky-header mb-4 d-flex justify-content-between align-items-center">
-        <h2 class="text-primary m-0">Етап 3: Оцінювання матеріалів (PDF)</h2>
+        <h2 class="text-primary m-0">Етап 3: Оцінювання матеріалів</h2>
         <div id="userEmailDisplay" class="badge bg-secondary p-2"></div>
     </div>
 
     <form id="evaluationForm">
         <div class="criterion-group">
             <label class="form-label fw-bold">1. Оберіть учасника:</label>
-            <select class="form-select mb-3" id="participantName" name="participantName" required>
+            <select class="form-select" id="participantName" name="participantName" required>
                 <option value="">Завантаження списку...</option>
             </select>
-            
-            <div id="pdfDisplay">
-                <div class="empty-pdf">Оберіть учасника, щоб переглянути PDF-документ</div>
-            </div>
         </div>
 
-        <div class="container mt-4">
+        <div class="container mt-4 p-0">
             <div class="criterion-group border p-3 mb-4 rounded bg-white shadow-sm">
                 <h4 class="text-primary border-bottom pb-2">1. Мета, очікувані результати і відповідність темі (макс. 20 балів)</h4>
                 <div class="table-responsive">
@@ -182,7 +154,7 @@
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykAAmRA6kZNTw6V5MU0gRbPfI1spVsa3FIe5SDnDc_0crTFSRqDEjbvN037PpP5UxS/exec'; 
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVqPmnHsBzAXC1CJJLa8vvH7BV9zgoEwgoY1WsziwjvErTywFNnMjs0VywSqHzZLyK/exec'; 
     let currentUserEmail = "";
     let participantsData = []; 
     
@@ -207,32 +179,6 @@
       "larisash1771@gmail.com",
       "irashev.333@gmail.com"
     ];
-
-    // === БЛОК ПОСИЛАНЬ НА ЗАВДАННЯ ===
-    const taskLinksMap = {
-        "Категорія А: Початкова освіта": "https://ipp.org.ua/wp-content/uploads/2026/10/YA_doslidzhuiu_svit_4_klas.pdf",
-        "A-05": "https://ipp.org.ua/wp-content/uploads/2026/10/YA_doslidzhuiu_svit_4_klas.pdf",
-        
-        "Технології": "https://ipp.org.ua/wp-content/uploads/2026/10/Tekhnolohii_5_klas.pdf",
-        "Категорія Б: Технології": "https://ipp.org.ua/wp-content/uploads/2026/10/Tekhnolohii_5_klas.pdf",
-        "B-T1": "https://ipp.org.ua/wp-content/uploads/2026/10/Tekhnolohii_5_klas.pdf",
-        
-        "Фізична культура": "https://ipp.org.ua/wp-content/uploads/2026/10/Fizychna_kultura_5_klas.pdf",
-        "Категорія Б: Фізична культура": "https://ipp.org.ua/wp-content/uploads/2026/10/Fizychna_kultura_5_klas.pdf",
-        "B-F2": "https://ipp.org.ua/wp-content/uploads/2026/10/Fizychna_kultura_5_klas.pdf",
-        
-        "Українська мова": "https://ipp.org.ua/wp-content/uploads/2026/10/Ukrainska_mova_5_klas.pdf",
-        "Категорія Б: Українська мова": "https://ipp.org.ua/wp-content/uploads/2026/10/Ukrainska_mova_5_klas.pdf",
-        "B-U2": "https://ipp.org.ua/wp-content/uploads/2026/10/Ukrainska_mova_5_klas.pdf",
-        
-        "Музичне мистецтво": "https://ipp.org.ua/wp-content/uploads/2026/10/Muzychne_mystetstvo_5_klas.pdf",
-        "Категорія Б: Музичне мистецтво": "https://ipp.org.ua/wp-content/uploads/2026/10/Muzychne_mystetstvo_5_klas.pdf",
-        "B-M2": "https://ipp.org.ua/wp-content/uploads/2026/10/Muzychne_mystetstvo_5_klas.pdf",
-        
-        "Образотворче мистецтво": "https://ipp.org.ua/wp-content/uploads/2026/10/Obrazotvorche_mystetstvo_5_klas.pdf",
-        "Категорія Б: Образотворче мистецтво": "https://ipp.org.ua/wp-content/uploads/2026/10/Obrazotvorche_mystetstvo_5_klas.pdf",
-        "B-O2": "https://ipp.org.ua/wp-content/uploads/2026/10/Obrazotvorche_mystetstvo_5_klas.pdf"
-    };
 
     window.onload = function () {
         google.accounts.id.initialize({
@@ -314,93 +260,13 @@
             .catch(err => console.error("Помилка завантаження учасників:", err));
     }
 
-    function formatEmbedUrl(url) {
-        if (!url) return null;
-        
-        // 1. YouTube
-        const ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-        const ytMatch = url.match(ytRegExp);
-        if (ytMatch && ytMatch[2].length === 11) {
-            return `https://www.youtube.com/embed/${ytMatch[2]}`;
-        }
-        
-        // 2. Google Drive
-        if (url.includes('drive.google.com/file/d/')) {
-            const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-            if (match && match[1]) {
-                return `https://drive.google.com/file/d/${match[1]}/preview`;
-            }
-        }
-        
-        // 3. Прямі посилання на PDF
-        if (url.toLowerCase().includes('.pdf')) {
-            return url.split('#')[0] + '#toolbar=0&navpanes=0'; 
-        }
-        
-        return url;
-    }
-
-    document.getElementById('participantName').onchange = function() {
-        const index = this.value;
-        const mediaDiv = document.getElementById('pdfDisplay');
-        
-        if (index === "") {
-            mediaDiv.innerHTML = '<div class="empty-pdf">Оберіть учасника...</div>';
-            return;
-        }
-        
-        const rawUrl = participantsData[index][2]; 
-        const participantSubcategory = participantsData[index][4] ? String(participantsData[index][4]).trim() : ""; 
-        
-        const embedUrl = formatEmbedUrl(rawUrl);
-        const isYouTube = embedUrl && embedUrl.includes('youtube.com/embed');
-        
-        if (embedUrl) {
-            const fallbackLink = !isYouTube 
-                ? `<div class="mt-2 text-center w-100">
-                     <p class="text-muted small mb-1">Файл не завантажився у вікні вище?</p>
-                     <a href="${rawUrl}" target="_blank" class="btn btn-sm btn-outline-secondary">Відкрити PDF у новій вкладці</a>
-                   </div>` 
-                : '';
-            
-            // --- ГЕНЕРАЦІЯ КНОПКИ ЗАВДАННЯ ---
-            let taskButtonHtml = '';
-            const taskUrl = taskLinksMap[participantSubcategory];
-            
-            if (taskUrl) {
-                taskButtonHtml = `<a href="${taskUrl}" target="_blank" class="btn btn-outline-primary px-3">Переглянути завдання</a>`;
-            } else if (participantSubcategory) {
-                taskButtonHtml = `<span class="text-muted small align-self-center border p-2 rounded">Завдання для "${participantSubcategory}" не налаштоване</span>`;
-            } else {
-                taskButtonHtml = `<span class="text-muted small align-self-center border p-2 rounded">Категорію учасника не знайдено</span>`;
-            }
-
-            // --- ДИНАМІЧНЕ ПОСИЛАННЯ НА ДОДАТОК ДЛЯ ЖУРІ ---
-            let originalId = participantsData[index][5];
-            let dynamicAppendixLink = `https://ipp.org.ua/wp-content/uploads/2026/10/Etap3_kartky_dlia_zhuri_${originalId}.pdf`;
-
-            const extraButtons = `
-                <div class="mt-4 d-flex gap-2 justify-content-center flex-wrap">
-                    ${taskButtonHtml}
-                    <a href="${dynamicAppendixLink}" target="_blank" class="btn btn-info px-4 text-white fw-bold">Додаток для журі</a>
-                </div>
-            `;
-            
-            mediaDiv.innerHTML = `
-                <div class="pdf-container">
-                    <iframe src="${embedUrl}" allow="autoplay; fullscreen"></iframe>
-                </div>
-                ${fallbackLink}
-                ${extraButtons}`;
-        } else {
-            mediaDiv.innerHTML = '<div class="alert alert-warning mt-2">Матеріал не знайдено або посилання некоректне</div>';
-        }
-    };
-
     document.getElementById('evaluationForm').onsubmit = function(e) {
         e.preventDefault();
         const selectedIndex = document.getElementById('participantName').value;
-        if (selectedIndex === "") return;
+        if (selectedIndex === "") {
+            alert("Будь ласка, оберіть учасника перед збереженням оцінки.");
+            return;
+        }
 
         const btn = e.target.querySelector('button');
         const originalText = btn.textContent;
@@ -426,7 +292,6 @@
         }).then(() => {
             alert("Оцінку збережено!");
             this.reset(); 
-            document.getElementById('pdfDisplay').innerHTML = '<div class="empty-pdf">Оберіть наступного учасника...</div>';
             loadParticipants(); 
             btn.disabled = false;
             btn.textContent = originalText;
